@@ -1,100 +1,131 @@
 import 'package:flutter/material.dart';
 
-class CartPage extends StatelessWidget {
-  final List<Map<String, dynamic>> cartItems;
-  final void Function(int) onRemove; // ⬅️ callback hapus item
+// gunakan import berbasis package agar path konsisten
+import 'package:gunshop/models/product.dart';
+import 'package:gunshop/utils/currency_util.dart';
+import 'package:gunshop/screens/checkout_page.dart';
 
-  const CartPage({super.key, required this.cartItems, required this.onRemove});
+class CartPage extends StatefulWidget {
+  const CartPage({super.key});
+  static const route = '/cart';
 
-  double get _total =>
-      cartItems.fold(0, (sum, item) => sum + (item['price'] as num));
+  @override
+  State<CartPage> createState() => _CartPageState();
+}
+
+class _CartPageState extends State<CartPage> {
+  late List<Map<Product, int>> _items;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _items =
+        (ModalRoute.of(context)!.settings.arguments as List<Map<Product, int>>)
+            .map((e) => {...e})
+            .toList(); // local copy
+  }
+
+  int get _total =>
+      _items.fold(0, (sum, e) => sum + (e.keys.first.price * e.values.first));
 
   @override
   Widget build(BuildContext context) {
-    if (cartItems.isEmpty) {
-      return const Center(
-        child: Text(
-          'Keranjang masih kosong',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-        ),
-      );
-    }
-
-    return Column(
-      children: [
-        Expanded(
-          child: ListView.builder(
-            itemCount: cartItems.length,
-            itemBuilder: (context, i) {
-              final item = cartItems[i];
-              return Dismissible(
-                key: ValueKey('${item['name']}_$i'),
-                direction: DismissDirection.endToStart,
-                background: Container(
-                  alignment: Alignment.centerRight,
-                  padding: const EdgeInsets.only(right: 20),
-                  color: Colors.red,
-                  child: const Icon(Icons.delete, color: Colors.white),
-                ),
-                onDismissed: (_) {
-                  Future.delayed(Duration(milliseconds: 300), () {
-                    onRemove(i);
-                  });
-                },
-
-                child: ListTile(
-                  leading: Image.asset(
-                    item['image'],
-                    width: 50,
-                    height: 50,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) =>
-                        const Icon(Icons.image_not_supported),
+    return Scaffold(
+      appBar: AppBar(title: const Text('Keranjang')),
+      body: _items.isEmpty
+          ? const Center(child: Text('Keranjang masih kosong'))
+          : Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: _items.length,
+                    itemBuilder: (_, i) {
+                      final product = _items[i].keys.first;
+                      final qty = _items[i][product]!;
+                      return Dismissible(
+                        key: ValueKey(product.name),
+                        direction: DismissDirection.endToStart,
+                        onDismissed: (_) => setState(() => _items.removeAt(i)),
+                        background: Container(
+                          alignment: Alignment.centerRight,
+                          padding: const EdgeInsets.only(right: 20),
+                          color: Colors.red,
+                          child: const Icon(Icons.delete, color: Colors.white),
+                        ),
+                        child: ListTile(
+                          leading: Image.asset(product.image, width: 50),
+                          title: Text(product.name),
+                          subtitle: Text('Qty: $qty'),
+                          trailing: Text(
+                            'Rp ${formatRupiah(product.price * qty)}',
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                  title: Text(item['name']),
-                  trailing: Text('Rp ${item['price']}'),
                 ),
-              );
-            },
-          ),
-        ),
-        Container(
-          color: Colors.grey.shade100,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Total',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              ),
-              Text(
-                'Rp ${_total.toStringAsFixed(0)}',
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
+                _CartFooter(total: _total),
+
+                // --------- Tombol Checkout ----------
+                Padding(
+                  padding: const EdgeInsets.all(30),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        backgroundColor: Colors.green.shade700,
+                        foregroundColor:
+                            Colors.white, // Ganti warna teks di sini
+                      ),
+                      onPressed: _items.isEmpty
+                          ? null
+                          : () {
+                              Navigator.pushNamed(
+                                context,
+                                CheckoutPage.route,
+                                arguments: _items,
+                              );
+                            },
+                      child: const Text(
+                        'Checkout',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 14),
-              ),
-              onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Checkout belum di-implementasi')),
-              ),
-              child: const Text('Checkout'),
+              ],
             ),
+    );
+  }
+}
+
+class _CartFooter extends StatelessWidget {
+  final int total;
+  const _CartFooter({required this.total});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      color: Colors.grey.shade100,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text(
+            'Total',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-        ),
-      ],
+          Text(
+            'Rp ${formatRupiah(total)}',
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
     );
   }
 }
