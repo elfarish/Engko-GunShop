@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../models/product.dart';
-import '../utils/currency_util.dart';
+import 'package:gunshop/models/product.dart';
+import 'package:gunshop/utils/currency_util.dart';
 
 class CheckoutPage extends StatelessWidget {
   static const route = '/checkout';
@@ -9,42 +9,60 @@ class CheckoutPage extends StatelessWidget {
 
   const CheckoutPage({super.key, required this.items});
 
-  int get total =>
-      items.fold(0, (sum, e) => sum + (e.keys.first.price * e.values.first));
-
   @override
   Widget build(BuildContext context) {
+    final total = items.fold<double>(
+      0,
+      (sum, item) => sum + (item.keys.first.price * item.values.first),
+    );
+
     return Scaffold(
       appBar: AppBar(title: const Text('Checkout')),
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const Text(
+              'Summary',
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
             Expanded(
               child: ListView.builder(
                 itemCount: items.length,
                 itemBuilder: (_, i) {
                   final product = items[i].keys.first;
                   final qty = items[i][product]!;
+                  final totalItem = product.price * qty;
+
                   return ListTile(
                     leading: Image.asset(product.image, width: 50),
                     title: Text(product.name),
                     subtitle: Text('Qty: $qty'),
-                    trailing: Text('Rp ${formatRupiah(product.price * qty)}'),
+                    trailing: Text(
+                      formatUSD(totalItem.toDouble()),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green,
+                      ),
+                    ),
                   );
                 },
               ),
             ),
-            Divider(thickness: 2),
+            const SizedBox(height: 12),
+            Divider(color: Colors.grey.shade400),
+            const SizedBox(height: 12),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text(
-                  'Total',
+                  'Total:',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  'Rp ${formatRupiah(total)}',
+                  formatUSD(total),
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -52,50 +70,29 @@ class CheckoutPage extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 24),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  // Misal tampil dialog konfirmasi
-                  showDialog(
-                    context: context,
-                    builder: (_) => AlertDialog(
-                      title: const Text('Konfirmasi Pembelian'),
-                      content: const Text(
-                        'Apakah Anda yakin ingin melakukan pembelian?',
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text('Batal'),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            // Tindakan setelah checkout selesai
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Pembelian berhasil diproses!'),
-                              ),
-                            );
-                            Navigator.popUntil(
-                              context,
-                              (route) => route.isFirst,
-                            );
-                          },
-                          child: const Text('Ya'),
-                        ),
-                      ],
-                    ),
+                  // Tampilkan pesan sukses
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Checkout berhasil!')),
                   );
+                  // Kembali ke halaman sebelumnya dengan mengirim hasil true
+                  Navigator.pop(context, true);
                 },
                 style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  backgroundColor: Colors.green.shade700,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
                 child: const Text(
-                  'Bayar Sekarang',
-                  style: TextStyle(fontSize: 18),
+                  'Confirm Payment',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),

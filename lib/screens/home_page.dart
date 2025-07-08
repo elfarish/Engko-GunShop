@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../models/product.dart';
-import '../../utils/currency_util.dart';
 import 'cart_page.dart';
 import 'product_detail_page.dart';
+import 'package:gunshop/utils/currency_util.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -43,7 +43,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Engko GunShop'),
+        title: const Text(''),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(56),
           child: Padding(
@@ -54,7 +54,7 @@ class _HomePageState extends State<HomePage> {
                   child: TextField(
                     onChanged: (v) => setState(() => _query = v),
                     decoration: InputDecoration(
-                      hintText: 'Cari produk...',
+                      hintText: 'Search product...',
                       prefixIcon: const Icon(Icons.search),
                       filled: true,
                       fillColor: Colors.white,
@@ -93,27 +93,36 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       body: _filtered.isEmpty
-          ? const Center(child: Text('Produk tidak ditemukan'))
-          : GridView.builder(
-              padding: const EdgeInsets.all(8),
-              itemCount: _filtered.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 8,
-                crossAxisSpacing: 8,
-                childAspectRatio: .7,
-              ),
-              itemBuilder: (_, i) => _ProductCard(
-                product: _filtered[i],
-                onTap: () => Navigator.pushNamed(
-                  context,
-                  ProductDetailPage.route,
-                  arguments: {
-                    'product': _filtered[i],
-                    'onAdd': () => _add(_filtered[i]),
-                  },
+          ? const Center(child: Text('No products found'))
+          : Column(
+              children: [
+                const _BannerAd(),
+                Expanded(
+                  child: GridView.builder(
+                    padding: const EdgeInsets.all(8),
+                    itemCount: _filtered.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 8,
+                          crossAxisSpacing: 8,
+                          childAspectRatio: .7,
+                        ),
+                    itemBuilder: (_, i) => _ProductCard(
+                      product: _filtered[i],
+                      onTap: () => Navigator.pushNamed(
+                        context,
+                        ProductDetailPage.route,
+                        arguments: {
+                          'product': _filtered[i],
+                          'onAdd': () => _add(_filtered[i]),
+                        },
+                      ),
+                      formatUSD: formatUSD,
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
     );
   }
@@ -122,7 +131,13 @@ class _HomePageState extends State<HomePage> {
 class _ProductCard extends StatelessWidget {
   final Product product;
   final VoidCallback onTap;
-  const _ProductCard({required this.product, required this.onTap});
+  final String Function(double) formatUSD; // double, bukan int
+
+  const _ProductCard({
+    required this.product,
+    required this.onTap,
+    required this.formatUSD,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -138,7 +153,12 @@ class _ProductCard extends StatelessWidget {
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(12),
                 ),
-                child: Image.asset(product.image, fit: BoxFit.cover),
+                child: Image.asset(
+                  product.image,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) =>
+                      const Icon(Icons.broken_image, size: 60),
+                ),
               ),
             ),
             Padding(
@@ -151,11 +171,59 @@ class _ProductCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 6),
               child: Text(
-                'Rp ${formatRupiah(product.price)}',
+                formatUSD(product.price),
                 style: const TextStyle(color: Colors.grey),
               ),
             ),
             const SizedBox(height: 6),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _BannerAd extends StatelessWidget {
+  const _BannerAd();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(12),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Stack(
+          alignment: Alignment.bottomLeft,
+          children: [
+            Image.asset(
+              'assets/images/banner.png',
+              height: 150,
+              width: double.infinity,
+              fit: BoxFit.cover,
+            ),
+            Container(
+              height: 150,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.black.withOpacity(0.6), Colors.transparent],
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                ),
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.all(12),
+              child: Text(
+                '🔥 Summer Tactical Sale - Up to 50% Off!',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  shadows: [Shadow(blurRadius: 3, color: Colors.black)],
+                ),
+              ),
+            ),
           ],
         ),
       ),

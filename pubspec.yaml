@@ -31,11 +31,19 @@ flutter:
 
   assets:
     - assets/images/logo.png
-    - assets/images/product1.png
-    - assets/images/product2.png
-    - assets/images/product3.png
-    - assets/images/product4.png
-    - assets/images/product5.png
+    - assets/images/products/tactical_combat_knife.jpg
+    - assets/images/products/military_grenade_dummy.jpg
+    - assets/images/products/tactical_backpack_45L.jpg
+    - assets/images/products/glock_19 _pistol.jpg
+    - assets/images/products/9mm_dummy_ammo.jpg
+    - assets/images/products/tactical_gloves.jpg
+    - assets/images/products/mp5_submachine_gun.jpg
+    - assets/images/products/tactical_helmet.jpg
+    - assets/images/products/full_face.jpg
+    - assets/images/products/tactical_plate.jpg
+    - assets/images/products/assault_rifle.jpg
+    - assets/images/products/tactical_kit.jpg
+    - assets/images/banner.png
 
   fonts:
     - family: Poppins

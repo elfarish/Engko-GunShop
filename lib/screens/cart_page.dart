@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-
-// gunakan import berbasis package agar path konsisten
 import 'package:gunshop/models/product.dart';
 import 'package:gunshop/utils/currency_util.dart';
 import 'package:gunshop/screens/checkout_page.dart';
@@ -19,13 +17,14 @@ class _CartPageState extends State<CartPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    // Ambil argumen dan buat salinan agar bisa diubah
     _items =
         (ModalRoute.of(context)!.settings.arguments as List<Map<Product, int>>)
             .map((e) => {...e})
-            .toList(); // local copy
+            .toList();
   }
 
-  int get _total =>
+  double get _total =>
       _items.fold(0, (sum, e) => sum + (e.keys.first.price * e.values.first));
 
   @override
@@ -42,6 +41,8 @@ class _CartPageState extends State<CartPage> {
                     itemBuilder: (_, i) {
                       final product = _items[i].keys.first;
                       final qty = _items[i][product]!;
+                      final totalPrice = product.price * qty;
+
                       return Dismissible(
                         key: ValueKey(product.name),
                         direction: DismissDirection.endToStart,
@@ -57,7 +58,11 @@ class _CartPageState extends State<CartPage> {
                           title: Text(product.name),
                           subtitle: Text('Qty: $qty'),
                           trailing: Text(
-                            'Rp ${formatRupiah(product.price * qty)}',
+                            formatUSD(totalPrice),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green,
+                            ),
                           ),
                         ),
                       );
@@ -65,8 +70,6 @@ class _CartPageState extends State<CartPage> {
                   ),
                 ),
                 _CartFooter(total: _total),
-
-                // --------- Tombol Checkout ----------
                 Padding(
                   padding: const EdgeInsets.all(30),
                   child: SizedBox(
@@ -75,17 +78,31 @@ class _CartPageState extends State<CartPage> {
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 15),
                         backgroundColor: Colors.green.shade700,
-                        foregroundColor:
-                            Colors.white, // Ganti warna teks di sini
+                        foregroundColor: Colors.white,
                       ),
                       onPressed: _items.isEmpty
                           ? null
-                          : () {
-                              Navigator.pushNamed(
+                          : () async {
+                              final result = await Navigator.pushNamed(
                                 context,
                                 CheckoutPage.route,
                                 arguments: _items,
                               );
+
+                              if (!mounted) return; // CEK widget masih aktif
+
+                              if (result == true) {
+                                setState(() {
+                                  _items.clear();
+                                });
+
+                                // Navigasi ke main (yang ada navbar), hapus history sebelumnya
+                                Navigator.pushNamedAndRemoveUntil(
+                                  context,
+                                  '/main',
+                                  (route) => false,
+                                );
+                              }
                             },
                       child: const Text(
                         'Checkout',
@@ -105,7 +122,7 @@ class _CartPageState extends State<CartPage> {
 }
 
 class _CartFooter extends StatelessWidget {
-  final int total;
+  final double total;
   const _CartFooter({required this.total});
 
   @override
@@ -121,7 +138,7 @@ class _CartFooter extends StatelessWidget {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           Text(
-            'Rp ${formatRupiah(total)}',
+            formatUSD(total),
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
         ],
