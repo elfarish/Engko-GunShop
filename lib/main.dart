@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'screens/product_detail_page.dart';
-import 'screens/home_page.dart';
 import 'screens/cart_page.dart';
 import 'screens/checkout_page.dart';
-import 'screens/splash_screen.dart';
-import 'screens/navigation.dart'; // misal main navigation
+import 'screens/product_detail_page.dart';
 import 'models/product.dart';
+import 'screens/navigation.dart'; // MainNavigation
+import 'screens/splash_screen.dart'; // Import SplashScreen
 
 void main() => runApp(const GunShopApp());
 
@@ -17,15 +16,17 @@ class GunShopApp extends StatelessWidget {
     return MaterialApp(
       title: 'GunShop',
       debugShowCheckedModeBanner: false,
-      initialRoute: '/',
+      initialRoute: SplashScreen.route, // SplashScreen dulu
       routes: {
-        '/': (_) => const SplashScreen(),
-        '/main': (_) => const MainNavigation(),
-        HomePage.route: (_) => const HomePage(),
-        CartPage.route: (_) => const CartPage(),
-        CheckoutPage.route: (_) => const CheckoutPage(
-          items: [],
-        ), // dummy, akan diisi argument saat dipanggil
+        SplashScreen.route: (context) => const SplashScreen(),
+        '/main': (context) => const MainNavigation(),
+        CartPage.route: (context) => const CartPage(),
+        CheckoutPage.route: (context) {
+          final args =
+              ModalRoute.of(context)!.settings.arguments
+                  as List<Map<Product, int>>;
+          return CheckoutPage(items: args);
+        },
         ProductDetailPage.route: (context) {
           final args =
               ModalRoute.of(context)!.settings.arguments

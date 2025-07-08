@@ -31,6 +31,7 @@ flutter:
 
   assets:
     - assets/images/logo.png
+    - assets/images/default_avatar.png
     - assets/images/products/tactical_combat_knife.jpg
     - assets/images/products/military_grenade_dummy.jpg
     - assets/images/products/tactical_backpack_45L.jpg

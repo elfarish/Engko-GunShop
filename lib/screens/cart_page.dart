@@ -89,21 +89,16 @@ class _CartPageState extends State<CartPage> {
                                 arguments: _items,
                               );
 
-                              if (!mounted) return; // CEK widget masih aktif
+                              if (!mounted)
+                                return; // pastikan widget masih aktif
 
                               if (result == true) {
                                 setState(() {
-                                  _items.clear();
+                                  _items.clear(); // Kosongkan keranjang
                                 });
-
-                                // Navigasi ke main (yang ada navbar), hapus history sebelumnya
-                                Navigator.pushNamedAndRemoveUntil(
-                                  context,
-                                  '/main',
-                                  (route) => false,
-                                );
                               }
                             },
+
                       child: const Text(
                         'Checkout',
                         style: TextStyle(

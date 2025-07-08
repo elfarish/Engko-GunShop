@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
+  static const route = '/';
+
   const SplashScreen({super.key});
 
   @override
