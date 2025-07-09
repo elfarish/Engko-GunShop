@@ -37,15 +37,26 @@ Aplikasi toko online yang menyediakan perlengkapan menembak seperti senapan, pel
 1. Clone repositori:
 
    ```bash
-   git clone https://github.com/namakelompok/gunshop-app.git
+   https://github.com/elfarish/Engko-GunShop.git
    ```
 
 2. Masuk ke folder proyek:
+
+   ```bash
    cd gunshop-app
+   ```
 
 3. Jalankan pub get:
 
+   ```bash
+   flutter pub get
+   ```
+
 4. Jalankan di emulator atau device:
+
+   ```bash
+   flutter run
+   ```
 
 ## 👥 Anggota Kelompok
 
