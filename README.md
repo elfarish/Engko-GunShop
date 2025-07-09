@@ -1,20 +1,57 @@
-<<<<<<< HEAD
-# gunshop
+# GunShop App 🛒🔫
 
-A new Flutter project.
+Aplikasi toko online yang menyediakan perlengkapan menembak seperti senapan, peluru, dan aksesoris lainnya. Dibangun dengan **Flutter** dan menggunakan **Provider** untuk state management.
 
-## Getting Started
+## 📱 Tampilan Utama
 
-This project is a starting point for a Flutter application.
+- Splash Screen
+- Dashboard (Home Page)
+- Halaman Produk
+- Cart Page (Keranjang)
+- Notification Page
+- Login & Register Page
+- Profile Page
 
-A few resources to get you started if this is your first Flutter project:
+## 🛠 Fitur yang Direncanakan
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- [x] Menampilkan daftar produk
+- [x] Halaman login dan register
+- [x] Menambahkan ke keranjang
+- [x] Notifikasi pembelian
+- [x] Halaman profil pengguna
+- [ ] Verifikasi Sertifikat Menembak
+- [ ] Profil lengkap dengan data pengguna
+- [ ] Kategori produk
+- [ ] Banner untuk iklan promosi
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-=======
-# Engko-GunShop
->>>>>>> d4b2b7ecbe92884de9e94c0abf9b7ff15e8c6789
+## 📦 Teknologi yang Digunakan
+
+- Flutter
+- Dart
+- Provider (State Management)
+- Google Fonts
+- Assets Images (Flutter local assets)
+
+## 🧪 Cara Menjalankan Proyek
+
+1. Clone repositori:
+
+   ```bash
+   git clone https://github.com/namakelompok/gunshop-app.git
+   ```
+
+2. Masuk ke folder proyek:
+   cd gunshop-app
+
+3. Jalankan pub get:
+
+4. Jalankan di emulator atau device:
+
+## 👥 Anggota Kelompok
+
+Muhamad Zidan Al-Farish (I.2211106)
+M Andra AlFarizi (I.2210187)
+
+## 📄 Lisensi
+
+Proyek ini dibuat sebagai bagian dari tugas pembelajaran. Tidak untuk penggunaan komersial tanpa izin.
