@@ -3,23 +3,28 @@ import 'package:flutter/material.dart';
 class ProfilPage extends StatelessWidget {
   const ProfilPage({super.key});
 
+  static const route = '/profile'; // opsional untuk route navigator
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // background bersih dan terang
+      backgroundColor: Colors.white, // latar bersih
       appBar: AppBar(
         backgroundColor: Colors.green.shade700,
         elevation: 0,
-        title: const Text('Profil'),
         centerTitle: true,
+        title: const Text(
+          'Profil Saya',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
       ),
       body: Center(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Avatar bundar dengan bayangan lembut
+              // Avatar dengan bayangan
               Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
@@ -27,7 +32,7 @@ class ProfilPage extends StatelessWidget {
                     BoxShadow(
                       color: Colors.green.shade200.withOpacity(0.4),
                       blurRadius: 20,
-                      offset: const Offset(0, 8),
+                      offset: const Offset(0, 10),
                     ),
                   ],
                 ),
@@ -36,27 +41,23 @@ class ProfilPage extends StatelessWidget {
                   backgroundImage: AssetImage(
                     'assets/images/default_avatar.png',
                   ),
-                  backgroundColor: Colors.transparent,
                 ),
               ),
               const SizedBox(height: 28),
 
-              // Text utama
               const Text(
                 'Halo, Selamat Datang!',
                 style: TextStyle(
-                  fontSize: 26,
+                  fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: Colors.black87,
                 ),
                 textAlign: TextAlign.center,
               ),
-
               const SizedBox(height: 12),
 
-              // Text deskriptif
               Text(
-                'Anda belum masuk ke akun.\nSilakan login atau daftar untuk melanjutkan.',
+                'Anda belum masuk ke akun.\nSilakan login atau daftar terlebih dahulu.',
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.grey.shade600,
@@ -64,13 +65,12 @@ class ProfilPage extends StatelessWidget {
                 ),
                 textAlign: TextAlign.center,
               ),
-
               const SizedBox(height: 40),
 
               // Tombol Login
               SizedBox(
                 width: double.infinity,
-                height: 52,
+                height: 50,
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.pushNamed(context, '/login');
@@ -80,22 +80,26 @@ class ProfilPage extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    elevation: 5,
+                    elevation: 3,
                     shadowColor: Colors.green.shade300,
                   ),
                   child: const Text(
                     'Masuk / Login',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
 
               const SizedBox(height: 16),
 
-              // Tombol Daftar (Outlined)
+              // Tombol Daftar
               SizedBox(
                 width: double.infinity,
-                height: 52,
+                height: 50,
                 child: OutlinedButton(
                   onPressed: () {
                     Navigator.pushNamed(context, '/register');

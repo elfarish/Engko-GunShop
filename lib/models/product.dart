@@ -16,7 +16,7 @@ class Product {
 const List<Product> dummyProducts = [
   Product(
     name: 'Tactical Combat Knife',
-    price: 23.33, // 350000 / 15000
+    price: 46.23, // 350000 / 15000
     image: 'assets/images/products/tactical_combat_knife.jpg',
     description:
         'This combat knife is specially designed to withstand extreme conditions in the field. Made with stainless steel for precise and reliable cutting performance. The non-slip rubber handle ensures a firm grip even in wet environments. Ideal for survival, outdoor activities, and tactical missions.',

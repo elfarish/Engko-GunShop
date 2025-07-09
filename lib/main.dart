@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'screens/cart_page.dart';
 import 'screens/checkout_page.dart';
 import 'screens/product_detail_page.dart';
+import 'screens/login_page.dart'; // ✅ Import halaman login
+import 'screens/register_page.dart'; // ✅ Import halaman daftar
+import 'screens/navigation.dart';
+import 'screens/splash_screen.dart';
 import 'models/product.dart';
-import 'screens/navigation.dart'; // MainNavigation
-import 'screens/splash_screen.dart'; // Import SplashScreen
 
 void main() => runApp(const GunShopApp());
 
@@ -16,7 +18,7 @@ class GunShopApp extends StatelessWidget {
     return MaterialApp(
       title: 'GunShop',
       debugShowCheckedModeBanner: false,
-      initialRoute: SplashScreen.route, // SplashScreen dulu
+      initialRoute: SplashScreen.route,
       routes: {
         SplashScreen.route: (context) => const SplashScreen(),
         '/main': (context) => const MainNavigation(),
@@ -35,6 +37,10 @@ class GunShopApp extends StatelessWidget {
           final onAdd = args['onAdd'] as VoidCallback;
           return ProductDetailPage(product: product, onAdd: onAdd);
         },
+
+        // ✅ Tambahkan route ini
+        '/login': (context) => const LoginPage(),
+        '/register': (context) => const RegisterPage(),
       },
     );
   }
